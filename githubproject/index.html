@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Генератор учебных вопросов</title>
+    <link rel="stylesheet" href="styles.css?v=20260705-ai-search-1">
+  </head>
+  <body>
+    <div class="language-gate" id="language-gate" role="dialog" aria-modal="true" aria-labelledby="language-gate-title" hidden>
+      <div class="language-gate-panel">
+        <p class="eyebrow" data-i18n="languageEyebrow">Выбор языка</p>
+        <h2 id="language-gate-title" data-i18n="languageGateTitle">Выберите язык</h2>
+        <p data-i18n="languageGateText">Интерфейс запомнит выбор. В списке 30 языков.</p>
+        <label class="field">
+          <span data-i18n="languageLabel">Язык</span>
+          <select id="welcome-language"></select>
+        </label>
+        <button class="primary-button" type="button" id="language-continue">
+          <span aria-hidden="true">✓</span>
+          <span class="button-text" data-i18n="languageContinue">Продолжить</span>
+        </button>
+      </div>
+    </div>
+
+    <main class="app-shell">
+      <section class="workspace" aria-labelledby="app-title">
+        <div class="intro-panel">
+          <p class="eyebrow" data-i18n="eyebrow">Интерактивный учебный инструмент</p>
+          <h1 id="app-title" data-i18n="appTitle">Генератор вопросов для обучения</h1>
+          <p class="intro-copy" data-i18n="introCopy">
+            Введите тему, выберите уровень сложности и получите набор вопросов с короткими пояснениями.
+          </p>
+        </div>
+
+        <form class="generator-panel" id="question-form">
+          <label class="field language-field">
+            <span data-i18n="languageLabel">Язык</span>
+            <select id="language-select" name="language"></select>
+          </label>
+
+          <label class="ai-toggle">
+            <input id="ai-mode" type="checkbox" checked>
+            <span>
+              <strong data-i18n="aiLabel">AI поиск</strong>
+              <small id="ai-status-line" data-i18n="aiHint">Ищет факты по теме и улучшает вопросы.</small>
+            </span>
+          </label>
+
+          <label class="field">
+            <span data-i18n="topicLabel">Тема</span>
+            <input
+              id="topic"
+              name="topic"
+              type="text"
+              placeholder="Например: машинное обучение, фотосинтез, история джаза"
+              data-i18n-placeholder="topicPlaceholder"
+              autocomplete="off"
+              required
+            >
+          </label>
+
+          <div class="controls-row">
+            <fieldset class="difficulty-control" aria-label="Сложность" data-i18n-aria-label="difficultyLabel">
+              <legend data-i18n="difficultyLabel">Сложность</legend>
+              <label>
+                <input type="radio" name="difficulty" value="beginner" checked>
+                <span data-i18n="beginner">Базовая</span>
+              </label>
+              <label>
+                <input type="radio" name="difficulty" value="intermediate">
+                <span data-i18n="intermediate">Средняя</span>
+              </label>
+              <label>
+                <input type="radio" name="difficulty" value="advanced">
+                <span data-i18n="advanced">Продвинутая</span>
+              </label>
+            </fieldset>
+
+            <label class="field count-field">
+              <span data-i18n="countLabel">Количество</span>
+              <input id="question-count" name="count" type="number" min="4" max="12" value="8">
+            </label>
+          </div>
+
+          <div class="action-row">
+            <button class="primary-button" type="submit" id="generate-button">
+              <span aria-hidden="true">+</span>
+              <span class="button-text" data-i18n="generate">Сгенерировать</span>
+            </button>
+            <button class="ghost-button" type="button" id="clear-button">
+              <span aria-hidden="true">x</span>
+              <span class="button-text" data-i18n="clear">Очистить</span>
+            </button>
+          </div>
+          <p class="status-line" id="status-line" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="results-shell" aria-labelledby="results-title">
+        <div class="results-header">
+          <div>
+            <p class="eyebrow" data-i18n="resultsEyebrow">Результаты</p>
+            <h2 id="results-title" data-i18n="emptyTitle">Вопросы появятся здесь</h2>
+            <p class="source-line" id="source-line" hidden></p>
+          </div>
+          <div class="export-actions">
+            <button class="icon-button" type="button" id="copy-button" title="Скопировать текст" data-i18n-title="copyTitle" disabled>
+              <span aria-hidden="true">C</span>
+              <span class="sr-only" data-i18n="copyTitle">Скопировать текст</span>
+            </button>
+            <button class="icon-button" type="button" id="txt-button" title="Экспортировать TXT" data-i18n-title="txtTitle" disabled>
+              <span aria-hidden="true">TXT</span>
+              <span class="sr-only" data-i18n="txtTitle">Экспортировать TXT</span>
+            </button>
+            <button class="icon-button" type="button" id="pdf-button" title="Экспортировать PDF" data-i18n-title="pdfTitle" disabled>
+              <span aria-hidden="true">PDF</span>
+              <span class="sr-only" data-i18n="pdfTitle">Экспортировать PDF</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="empty-state" id="empty-state">
+          <div class="empty-visual" aria-hidden="true">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <p data-i18n="emptyText">Начните с темы, которую хотите изучить или повторить.</p>
+        </div>
+
+        <ol class="question-list" id="question-list" aria-live="polite"></ol>
+      </section>
+    </main>
+
+    <script src="script.js?v=20260705-ai-search-1"></script>
+  </body>
+</html>

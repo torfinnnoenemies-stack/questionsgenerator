@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: questionsgeneratingsite
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python server.py"
+    healthCheckPath: /health
+    envVars:
+      - key: AI_PROVIDER
+        value: openrouter
+      - key: AI_MODEL
+        value: openrouter/free
